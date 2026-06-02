@@ -1,6 +1,5 @@
-from os import error
+
 import re
-from tkinter import PhotoImage
 from flask import Blueprint,render_template,request,url_for,redirect,flash,session,g
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -111,11 +110,19 @@ def profile(id):
             error="La contraseña debe de tener más de 5 caracteres"
 
         #capturamos foto y la salvamos en la carpeta media
-        if request.files["photo"]:
-            photo=request.files["photo"]
-            photo.save(f"blogr/static/media/{secure_filename(photo.filename)}") # type: ignore
-            #aqui guardamos la ruta de la foto en la bd
-            user.photo=f"media/{secure_filename(photo.filename)}" # type: ignore
+        # if request.files["photo"]:
+        #     photo=request.files["photo"]
+        #     photo.save(f"blogr/static/media/{secure_filename(photo.filename)}") # type: ignore
+        #     #aqui guardamos la ruta de la foto en la bd
+        #     user.photo=f"media/{secure_filename(photo.filename)}" # type: ignore
+
+        # Capturamos foto y la salvamos de forma segura si el usuario subió una
+        photo = request.files.get("photo")
+        if photo and photo.filename != "":
+            filename = secure_filename(photo.filename)
+            photo.save(f"blogr/static/media/{filename}")
+            # Aquí guardamos la ruta de la foto en la BD
+            user.photo = f"media/{filename}"
 
         if error is not None:
             flash(error)
