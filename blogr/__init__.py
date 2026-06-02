@@ -33,7 +33,14 @@ def createApp():
 
     #configuracion del idioma de la app en español
     import locale
-    locale.setlocale(locale.LC_ALL,"es_ES")
+    try:
+        locale.setlocale(locale.LC_ALL, "es_ES.UTF-8")
+    except locale.Error:
+        try:
+            locale.setlocale(locale.LC_ALL, "es_ES")
+        except locale.Error:
+            # Si el servidor no tiene español instalado, usa la configuración por defecto del sistema
+            locale.setlocale(locale.LC_ALL, "")
 
 
     #registrar vistas, estás diciéndole a la aplicación principal: "Oye, todas las rutas y funciones que definí en el Blueprint llamado 'home', o 'auth',etc, ahora forman parte de esta app".
